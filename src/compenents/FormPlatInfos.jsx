@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ChoixAlimentations from "./ChoixAlimentations";
+import axios from "axios";
 
 function FormPlatInfos() {
   const [plat, setPlat] = useState("");
@@ -15,12 +16,19 @@ function FormPlatInfos() {
   ]);
   const [alimentationChoice, setAlimentationChoice] = useState([]);
   const [recette, setRecette] = useState("");
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (plat !== "")
-      setRecette(
-        `Donne moi la recette ${plat} pour ${nbPersonnes} personne(s) avec un régime ${alimentationChoice}`
-      );
+  const [data, setData] = useState(null);
+  const handleSubmit = () => {
+    // e.preventDefault();
+    // if (plat !== "")
+    //   setRecette(
+    //     `Donne moi la recette ${plat} pour ${nbPersonnes} personne(s) avec un régime ${alimentationChoice}`
+    //   );
+
+    fetch(`http://localhost:8080/`)
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data.result.choices[0].text);
+      });
   };
 
   const handleChangePlat = (e) => {
@@ -39,8 +47,8 @@ function FormPlatInfos() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <input
+      {/* <form> */}
+      {/* <input
           type="text"
           name="plat"
           id="platInput"
@@ -67,12 +75,10 @@ function FormPlatInfos() {
               />
             </div>
           );
-        })}
-
-        <button>Envoyer</button>
-      </form>
-
-      <h3>{recette}</h3>
+        })} */}
+      <button onClick={handleSubmit}>Envoyer</button>
+      {/* </form> */}
+      {data ? <h3>{data}</h3> : null}{" "}
     </div>
   );
 }
